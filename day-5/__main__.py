@@ -1,7 +1,12 @@
-import sys, os, logging
+import sys, logging, os
+import argparse
 
-debug = os.environ.get('log_level', "DEBUG")
-part = int(os.environ.get('part', "1"))
+parser = argparse.ArgumentParser()
+parser.add_argument('-l', '--log_level', default="INFO")
+parser.add_argument('-t', '--testing', required=False, default=None)
+args = parser.parse_args()
+
+debug, part, testing = args.log_level, os.environ.get('part', 1), args.testing
 
 logging.basicConfig(level=debug)
 
@@ -22,3 +27,6 @@ elif part == 2:
 
 if debug != "DEBUG":
     print(sum) # 
+elif testing:
+    assert sum == int(testing)
+    print(f"Result {sum} is correct")
