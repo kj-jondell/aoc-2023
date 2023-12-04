@@ -2,6 +2,9 @@
 
 My solutions to this year's [advent of code](https://adventofcode.com/2023/).
 
+## Progress
+⭐⭐⭐⭐☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+
 ## Usage
 
 Use environment variables `AOC_SESSION`, `day`, `part` and `log_level` when running the following commands:
