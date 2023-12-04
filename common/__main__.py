@@ -13,19 +13,17 @@ from bs4 import BeautifulSoup
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-d", "--day", type=int, required=True)
-parser.add_argument("-p", "--part", type=int, default=1, required=False)
 parser.add_argument("--get-instructions", required=False, action='store_true')
 parser.add_argument("--get-input-data", required=False, action='store_true')
 parser.add_argument("--send-response", required=False, action='store_true')
 
 args = parser.parse_args()
 
-day, part = args.day, args.part
 try:
+    day, part = os.environ.get('day'), os.environ.get('part', 1)
     session = f"session={os.environ['AOC_SESSION']}"
-except KeyError:
-    print("Please set a valid AOC_SESSION environment variable.\nExiting")
+except KeyError as e:
+    print(f"Please set a valid {e} environment variable.\nExiting")
     sys.exit(0)
 
 get_instructions, get_input_data, send_response = args.get_instructions, args.get_input_data, args.send_response
