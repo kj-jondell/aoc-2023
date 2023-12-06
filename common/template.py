@@ -1,7 +1,7 @@
 from common import boilerplate
 import os, logging, re, sys
 
-part = os.environ.get('part', 1)
+part = int(os.environ.get('part', 1))
 
 @boilerplate.part
 def part1():

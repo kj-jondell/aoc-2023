@@ -12,10 +12,6 @@ def merge_seeds(seeds: list, map: list) -> list:
                 seeds[index] = dest_start + seed - src_start 
     return seeds
 
-def merge_seeds_ranges(seeds: list, map: list) -> list:
-    return seeds
-
-
 @boilerplate.part
 def part1():
     seeds = []
@@ -39,6 +35,7 @@ def part1():
         seeds = merge_seeds(seeds, map)
 
     logging.debug(f"result: {seeds}")
+    logging.debug(f"min: {min(seeds)}")
     return min(seeds)
 
 @boilerplate.part
@@ -64,27 +61,23 @@ def part2():
     target, location = 0, 0
     keep_counting = True
 
-    logging.debug(f"map {rev_maps}")
+    #logging.debug(f"map {rev_maps}")
 
     #def merge_maps(map_a, map_b):
-    #    pass 
-    
-    for map in rev_maps:
-        #clone_map = map[:]
-        #for index, (dest_start, src_start, range_length) in enumerate(map):
-        for dest_start, src_start, range_length in map:
-            #try:
-                #next_dest_start, next_src_start, next_range_length = map[index+1]
-                #if dest_start+range_length-next_dest_start != 0:
-            logging.debug(f"{dest_start} {src_start} {range_length}")
-        #            #logging.debug(f"{dest_start+range_length} {dest_start+range_length} {next_dest_start-range_length-dest_start}")
-        #            clone_map.insert(index+1, [dest_start+range_length, dest_start+range_length, next_dest_start-range_length-dest_start])
-        #            #logging.debug(f"{next_dest_start} {next_src_start} {next_range_length}")
-        #    except:
-        #        pass
+    #    merged = sorted(map_a+map_b, key=lambda p: p[0]) 
+    #    logging.debug(merged)
+    #    for index, map in enumerate(merged[:-1]):
+    #        next_dest_start, next_src_start, next_range_length = merged[index+1]
+    #        dest_start, src_start, range_length = map
+    #        if dest_start + range_length > next_dest_start:
+    #            merged[index] = [dest_start, , next_dest_start-dest_start]
+    #            print(dest_start, src_start, range_length)
+    #                
+    #        
+    #    logging.debug(merged)
 
-        logging.debug("")
-        #map = clone_map
+    #for index, map in enumerate(rev_maps[:-1]):
+    #    merge_maps(map, rev_maps[index+1])
 
     #for map in rev_maps:
     #    for dest_start, src_start, range_length in map:
@@ -93,28 +86,29 @@ def part2():
 
 
 
-    #while keep_counting:
-    #    for map in rev_maps:
-    #        traversal = None
-    #        for dest_start, src_start, range_length in map:
-    #            if target >= dest_start and target <= dest_start+range_length:
-    #                traversal = src_start + target - dest_start 
-    #                break
-    #        target = target if not traversal else traversal
-    #        #logging.debug(f"{map} {target}")
-    #    for index in range(0, len(seeds), 2):
-    #        seed_start, seed_length = seeds[index], seeds[index+1]
-    #        if target >= seed_start and target <= seed_start+seed_length:
-    #            keep_counting = False
-    #            break
+    while keep_counting:
+        for map in rev_maps:
+            traversal = None
+            for dest_start, src_start, range_length in map:
+                if target in range(dest_start, dest_start+range_length):
+                    traversal = src_start + target - dest_start 
+                    break
+            target = target if not traversal else traversal
+            #logging.debug(f"{map} {target}")
+        
+        for index in range(0, len(seeds), 2):
+            seed_start, seed_length = seeds[index], seeds[index+1]
+            if target in range(seed_start, seed_start+seed_length):
+                keep_counting = False
+                break
 
-    #    logging.debug(target)
-    #    if keep_counting:
-    #        target = location + 1
-    #        location += 1
+        #logging.debug(target)
+        if keep_counting:
+            target = location + 1
+            location += 1
 
-    #logging.debug(f"location {location} target {target}")
-    #return location 
+    logging.debug(f"location {location} target {target}")
+    return location 
 
 
 if part == 1:
