@@ -7,9 +7,9 @@ values = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 
 def get_points_of_hand(hand: str):
     sum = 0
-    for value in hand:
-        sum += values.index(value)
-    return len(values)*5-sum
+    for index, value in enumerate(hand):
+        sum += values.index(value)*index
+    return -sum
 
 type_of_hands = [(lambda l: l.count(l[0]) == 5, "Five of a kind"), (lambda l: l.count(l[1]) == 4 or l.count(l[1]) == 4, "Four of a kind"),( lambda l: len(list(set(l))) == 2, "Full house"), (lambda l: l.count(l[1]) == 3 or l.count(l[1]) == 3 or l.count(l[2]) == 3, "Three of a kind"), (lambda l: len(list(set(l))) == 3, "Two pair"), (lambda l: len(list(set(l))) == 4, "One pair"), (lambda l: len(list(set(l))) == 5, "High card")]
 
