@@ -12,9 +12,26 @@ def get_points_of_hand(hand: str, value_list: list = values):
         sum.append(value_list[::-1].index(value))
     return sum
 
-type_of_hands = [(lambda l: l.count(l[0]) == 5, "Five of a kind"), (lambda l: l.count(l[0]) == 4 or l.count(l[1]) == 4, "Four of a kind"),( lambda l: len(list(set(l))) == 2, "Full house"), (lambda l: l.count(l[0]) == 3 or l.count(l[1]) == 3 or l.count(l[2]) == 3, "Three of a kind"), (lambda l: len(list(set(l))) == 3, "Two pair"), (lambda l: len(list(set(l))) == 4, "One pair"), (lambda l: len(list(set(l))) == 5, "High card")]
+types = [(1, [5], "Five of a kind"), (2, [1, 4], "Four of a kind"), (2, [2, 3], "Full house"), (3, [1, 1, 3], "Three of a kind"), (3, [1, 2, 2], "Two pairs"), (4, [1, 1, 1, 2], "One pair"), (5, [1, 1, 1, 1, 1], "High score")]
 
-type_of_hands_part_2 = [(lambda l: len(list(set(l) - {'J'})) <= 1, "Five of a kind"), (lambda l: len(list(set(l)-{'J'})) == 2 and (l.count(list(set(l)-{'J'})[0]) < 2 or l.count(list(set(l)-{'J'})[1]) < 2), "Four of a kind"), (lambda l: len(list(set(l)-{'J'})) == 2, "Full house"), (lambda l: len(list(set(l)-{'J'})) == 3 and (l.count(list(set(l)-{'J'})[0]) == 3 - l.count('J') or l.count(list(set(l)-{'J'})[1]) == 3 - l.count('J') or l.count(list(set(l)-{'J'})[2]) == 3 - l.count('J')), "Three of a kind"), (lambda l: len(list(set(l)-{'J'})) == 3, "Two pair"), (lambda l: len(list(set(l)-{'J'})) == 4, "One pair"), (lambda l: len(list(set(l))) == 5, "High card")]
+def get_type_of_hand(hand: str, with_joker: bool = False):
+    if not with_joker:
+        symbols = set(hand)
+        logging.debug(hand)
+        for index, (amt, setup, name) in enumerate(types):
+            if len(list(symbols)) == amt and sorted([hand.count(p) for p in list(symbols)]) == setup:
+                return index, name
+    else:
+        symbols = set(hand) - {'J'}
+        if not symbols: #edge case JJJJJ
+            return 0, types[0][2]
+        for index, (amt, setup, name) in enumerate(types):
+            if len(list(symbols)) == amt:
+                count_of_symbols = sorted([hand.count(p) for p in list(symbols)])
+                count_of_symbols[-1] += hand.count('J')
+                logging.debug(f"{sorted(count_of_symbols)} and {setup}")
+                if count_of_symbols == setup:
+                    return index, name
 
 #Five of a kind, where all five cards have the same label: AAAAA
 #Four of a kind, where four cards have the same label and one card has a different label: AA8AA
@@ -37,17 +54,16 @@ def part1():
     all_inclusive = []
 
     for hand_index, hand in enumerate(hands):
-        for index, (type_of_hand, name) in enumerate(type_of_hands):
-            if type_of_hand(hand):
-                rank = len(type_of_hands)-index
-                logging.debug(f"{hand} is {name} with hand rank {rank} and score {get_points_of_hand(hand)}")
-                all_inclusive.append((hand, bids[hand_index], rank, get_points_of_hand(hand)))
-                break
+        index, type_of_hand = get_type_of_hand(hand)
+        rank = len(types)-index
 
+        logging.debug(f"{hand} is a {type_of_hand}")
+        all_inclusive.append((hand, bids[hand_index], rank, get_points_of_hand(hand)))
+    
     all_inclusive.sort(key = lambda p: (p[2], p[3]))
     logging.debug(all_inclusive)
     for index, value in enumerate(all_inclusive):
-        logging.debug(f"rank: {index+1} for {value[0]} (which is a {type_of_hands[len(type_of_hands)-value[2]][1]}) with bid {value[1]}: {value[1]*(index+1)}")
+        logging.debug(f"rank: {index+1} for {value[0]} (which is a {types[len(types)-value[2]][2]}) with bid {value[1]}: {value[1]*(index+1)}")
     return sum([int(value[1])*(index+1) for index, value in enumerate(all_inclusive)])
 
 @boilerplate.part
@@ -63,22 +79,19 @@ def part2():
     all_inclusive = []
 
     for hand_index, hand in enumerate(hands):
-        for index, (type_of_hand, name) in enumerate(type_of_hands_part_2):
-            if type_of_hand(hand):
-                rank = len(type_of_hands)-index
-                #rank = len(type_of_hands)-index+hand.count('J')
-                #print(rank)
-                #name = type_of_hands[index-hand.count('J')][1]
-                logging.debug(f"{hand} is {name} with hand rank {rank} and score {get_points_of_hand(hand, values_part2)}")
-                all_inclusive.append((hand, bids[hand_index], rank, get_points_of_hand(hand, values_part2)))
-                break
 
+        logging.debug(f"{hand}")
+        index, type_of_hand = get_type_of_hand(hand, True)
+        rank = len(types)-index
+
+        logging.debug(f"{hand} is a {type_of_hand}")
+        all_inclusive.append((hand, bids[hand_index], rank, get_points_of_hand(hand, values_part2)))
+    
     all_inclusive.sort(key = lambda p: (p[2], p[3]))
     logging.debug(all_inclusive)
     for index, value in enumerate(all_inclusive):
-        logging.debug(f"rank: {index+1} for {''.join(sorted(str(value[0]).replace('J', '')))} (which is a {type_of_hands[len(type_of_hands)-value[2]][1]}) with bid {value[1]}: {value[1]*(index+1)}")
+        logging.debug(f"rank: {index+1} for {value[0]} (which is a {types[len(types)-value[2]][2]}) with bid {value[1]}: {value[1]*(index+1)}")
     return sum([int(value[1])*(index+1) for index, value in enumerate(all_inclusive)])
-
 
 if part == 1:
     part1()
