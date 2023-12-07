@@ -15,6 +15,8 @@ def part(child_fn):
     def wrapper():
         sum = child_fn()
 
+        logging.debug(sum)
+
         if debug != "DEBUG":
             print(sum) # 
         elif testing:
