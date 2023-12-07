@@ -3,10 +3,10 @@ import os, logging, re, sys, math
 
 part = int(os.environ.get('part', 1))
 
-def quadratic_formula(p: float, q: float):
-    part = math.sqrt(-4*q+p**2)
-    first = -p/2
-    return first+part, first-part
+#def quadratic_formula(p: float, q: float):
+#    part = math.sqrt(-4*q+p**2)
+#    first = -p/2
+#    return first+part, first-part
 
 def get_distances(amt_time: int, min_distance: int) -> "list[int]":
     # running_time * velocity
@@ -30,8 +30,8 @@ def part1():
 
     prod_sum = 1
     for index, time in enumerate(times):
-        #prod_sum *= len(get_distances(time, distances[index]))
-        logging.debug(f"amt_time: {time} distance: {distances[index]} and roots: {quadratic_formula(time, distances[index])} and solution: {len(get_distances(time, distances[index]))}")
+        prod_sum *= len(get_distances(time, distances[index]))
+        #logging.debug(f"amt_time: {time} distance: {distances[index]} and roots: {quadratic_formula(time, distances[index])} and solution: {len(get_distances(time, distances[index]))}")
 
     return prod_sum
 
